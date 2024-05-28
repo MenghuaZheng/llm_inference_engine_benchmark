@@ -33,7 +33,7 @@ Thanks for the res: [pandada8/llm-inference-benchmark: LLM 推理服务性能测
 
 `-m` The model path.
 
-more parameters and detail can be learned from: [llama.cpp](https://github.com/ggerganov/llama.cpp) and [llama.cpp-server](https://github.com/ggerganov/llama.cpp/tree/master/examples/server).
+more parameters and detail can be learned from: [llama.cpp](https://github.com/ggerganov/llama.cpp) and [llama.cpp-server](https://github.com/ggerganov/llama.cpp/tree/master/examples/server) and other [literature](https://discuss.linuxcontainers.org/t/ai-tutorial-llama-cpp-and-ollama-servers-plugins-for-vs-code-vs-codium-and-intellij/19744).
 
 - In the `llm_inference_engine_benchmark` directory, run the test code for llama.cpp.
 
@@ -47,3 +47,13 @@ python draw.py
 `--endpoint` The endpoint for the server.
 
 `--model` `llama` meanings the family of llama.
+
+
+
+## Result
+
+![](images\llama2-7b-throughput.png)
+
+![](.\images\llama2-7b-avglat.png)
+
+![](.\images\llama2-7b-first-token-lat.png)
