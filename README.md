@@ -52,8 +52,8 @@ python draw.py
 
 ## Result
 
-![](images\llama2-7b-throughput.png)
+![Throughput](images\llama2-7b-throughput.png)
 
-![](.\images\llama2-7b-avglat.png)
+![none-first Token Latency](.\images\llama2-7b-avglat.png)
 
-![](.\images\llama2-7b-first-token-lat.png)
+![First Token Latency](.\images\llama2-7b-first-token-lat.png)
