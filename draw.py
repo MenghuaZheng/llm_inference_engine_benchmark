@@ -5,7 +5,7 @@ import polars as pl
 import plotly.express as px
 
 llamas = pl.concat([
-    pl.from_records(json.load(open('result/2024_05_28_14_32_02_llama_llama.cpp.json'))['results']).drop('raw_ticks').sort('batch').with_columns(type=pl.lit('llama-7b@llama.cpp-0.2.5'))
+    pl.from_records(json.load(open('result/2024_05_28_14_32_02_llama_llama.cpp.json'))['results']).drop('raw_ticks').sort('batch').with_columns(type=pl.lit('llama-7b-f32@llama.cpp'))
 ]).to_pandas()
 
 fig_llama_throughput = px.line(llamas, x='batch', y='token_per_s', color='type', title='Llama Throughput')
