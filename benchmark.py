@@ -34,7 +34,8 @@ def get_endpoint(endpoint):
     if args.backend == 'llama.cpp':
         return endpoint + '/completion'
     elif args.backend == 'vllm':
-        return endpoint + '/worker_generate_stream'
+        # return endpoint + '/worker_generate_stream'
+        return endpoint + '/v1/completions'
     elif args.backend in ['tgi', 'lorax']:
         return endpoint + '/generate_stream'
 
@@ -50,11 +51,11 @@ def get_body():
 
     if args.backend == 'vllm':
         return {
+            "model": "model_executor/models/Llama-2-7b-hf/",
+            "max_tokens": 1024,
             "prompt": prompt,
-            "max_new_tokens": 1024,
             "temperature": 0,
-            "stop": stop,
-            'echo': False,
+            "stream": True
         }
     elif args.backend == 'lorax':
         return {
@@ -81,6 +82,8 @@ def get_body():
             "stream": True
         }
 
+headers = {"Content-Type": "application/json"}
+
 async def requests_worker(endpoint: str):
     start = time.perf_counter()
     async with httpx.AsyncClient(timeout=httpx.Timeout(connect=None, pool=None, write=None, read=None)) as client:
@@ -97,10 +100,9 @@ async def requests_worker(endpoint: str):
             sys.stdout.write('.')
             sys.stdout.flush()
 
-            async with client.stream('POST', endpoint, json=body) as r:
+            async with client.stream('POST', endpoint, headers = headers, json=body) as r:
                 async for chunk in r.aiter_text():
-                # async for chunk in r.iter_lines():
-                    tt = time.perf_counter() 
+                    tt = time.perf_counter()
                     ticks[-1].append(tt)
                     delta = tt - start
                     if delta > args.duration:
@@ -110,12 +112,12 @@ async def requests_worker(endpoint: str):
                     if args.debug:
                         print(repr(chunk))
                     if args.backend == 'vllm':
-                        tokens[-1] = orjson.loads(chunk[:-1])['usage']['completion_tokens']
+                        tokens[-1] += 1
+                        # tokens[-1] = orjson.loads(chunk[:-1])['usage']['completion_tokens']
                     elif args.backend == 'tgi':
                         tokens[-1] += 1
                     elif args.backend == 'llama.cpp':
                         tokens[-1] += 1
-                        # print("tokens: ", tokens)
 
 async def batch_worker(batches, endpoint):
     result = []
