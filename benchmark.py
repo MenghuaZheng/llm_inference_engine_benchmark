@@ -14,7 +14,7 @@ import random
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', choices=['qwen', 'llama'])
-parser.add_argument('--backend', choices=['vllm', 'lorax', 'tgi', 'llama.cpp'])
+parser.add_argument('--backend', choices=['vllm', 'lorax', 'tgi', 'llama.cpp', 'fastllm'])
 parser.add_argument('--batch', nargs='+', type=int, default=[1, 2, 4, 8, 16, 32, 48, 64, 80, 96, 128])
 parser.add_argument('--endpoint', nargs="+")
 parser.add_argument('--duration', type=int, default=60)
@@ -36,6 +36,9 @@ def get_endpoint(endpoint):
     elif args.backend == 'vllm':
         # return endpoint + '/worker_generate_stream'
         return endpoint + '/v1/completions'
+    elif args.backend == 'fastllm':
+        # return endpoint + '/worker_generate_stream'
+        return endpoint + '/completion'
     elif args.backend in ['tgi', 'lorax']:
         return endpoint + '/generate_stream'
 
@@ -81,6 +84,14 @@ def get_body():
             "n_predict":1024,
             "stream": True
         }
+    elif args.backend == 'fastllm':
+        return {
+            "prompt": prompt,
+            "stop": stop,
+            "temperature":0,
+            "n_predict":1024,
+            "stream": True
+        }
 
 headers = {"Content-Type": "application/json"}
 
@@ -117,6 +128,8 @@ async def requests_worker(endpoint: str):
                     elif args.backend == 'tgi':
                         tokens[-1] += 1
                     elif args.backend == 'llama.cpp':
+                        tokens[-1] += 1
+                    elif args.backend == 'fastllm':
                         tokens[-1] += 1
 
 async def batch_worker(batches, endpoint):

@@ -29,10 +29,12 @@ import polars as pl
 import plotly.express as px
 from plotly.subplots import make_subplots
 
+
 # 读取数据并合并
 llamas = pl.concat([
-    pl.from_records(json.load(open('result/2024_05_28_14_32_02_llama_llama.cpp.json'))['results']).drop('raw_ticks').sort('batch').with_columns(type=pl.lit('llama-7b-f32@llama.cpp')),
-    pl.from_records(json.load(open('result/2024_05_29_14_37_12_llama_vllm.json'))['results']).drop('raw_ticks').sort('batch').with_columns(type=pl.lit('llama-7b-f32@vllm'))
+    pl.from_records(json.load(open('result/2024_05_30_11_10_12_llama_llama.cpp.json'))['results']).drop('raw_ticks').sort('batch').with_columns(type=pl.lit('llama-7b-f16@llama.cpp')),
+    pl.from_records(json.load(open('result/2024_05_29_14_37_12_llama_vllm.json'))['results']).drop('raw_ticks').sort('batch').with_columns(type=pl.lit('llama-7b-f16@vllm')),
+    pl.from_records(json.load(open('result/2024_05_30_11_35_53_llama_fastllm.json'))['results']).drop('raw_ticks').sort('batch').with_columns(type=pl.lit('llama-7b-f16@fastllm'))
 ]).to_pandas()
 
 def create_and_save_plot(llamas, y_column, title, file_name, log_base='e'):

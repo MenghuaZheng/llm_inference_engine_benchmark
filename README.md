@@ -2,12 +2,13 @@
 This repository aims to evaluate various open-source inference frameworks, analyzing their strengths and weaknesses.
 
 Thanks for the res: [pandada8/llm-inference-benchmark: LLM 推理服务性能测试 (github.com)](https://github.com/pandada8/llm-inference-benchmark/tree/master)
+https://github.com/ninehills/llm-inference-benchmark
 
 ## Information
 
 - **Hardware**: Nvidia H800
 - **LLM model**: `llama2` 
-- **llm inference engine**:  [llama.cpp](https://github.com/ggerganov/llama.cpp)
+- **llm inference engine**:  [llama.cpp](https://github.com/ggerganov/llama.cpp), vllm, fastllm
 - **指标**: 
   - `Thoughtput`
   -  `none-first Token Latency`
@@ -22,7 +23,7 @@ Thanks for the res: [pandada8/llm-inference-benchmark: LLM 推理服务性能测
 - In the `llama.cpp` directory, run the llama.cpp server.
 
 ```bash
-~/code/llama.cpp$ ./server --n-gpu-layers 999 --host 127.0.0.1 --port 8082 -m models/llama-2-7b/llama-2-7b-7B-F32.gguf
+~/code/llama.cpp$ CUDA_VISIBLE_DEVICES=0 ./server --n-gpu-layers 999 --host 127.0.0.1 --port 8082 -m models/llama-2-7b/llama-2-7b-7B-F16.gguf
 ```
 
 `--n-gpu-layers` the number of layer load to GPU. Set `999` making all layers load to GPU.  
@@ -49,6 +50,29 @@ python draw.py
 `--model` `llama` meanings the family of llama.
 
 
+### vllm
+- run the vllm serve
+  
+```bash
+python -m vllm.entrypoints.openai.api_server  --model model_executor/models/Llama-2-7b-hf/ --host 127.0.0.1 --port 8082
+```
+
+- run the test code for vllm.
+```bash
+python benchmark.py --model llama --backend vllm --endpoint http://127.0.0.1:8082
+```
+
+### fastllm
+- run the fastllm serve
+  
+```bash
+~/code/fastllm/build$ ./webui -p ../mode_zoo/llama2-7b.flm --port 8082
+```
+
+- run the test code for fastllm.
+```bash
+python benchmark.py --model llama --backend fastllm --endpoint http://127.0.0.1:8082
+```
 
 ## Result
 
