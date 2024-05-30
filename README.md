@@ -76,8 +76,11 @@ python benchmark.py --model llama --backend fastllm --endpoint http://127.0.0.1:
 
 ## Result
 
+### Thoughput
 ![Throughput](images/llama2-7b-throughput.png)
 
+### Averge Token Latency
 ![none-first Token Latency](images/llama2-7b-avglat.png)
 
+### First Token Latency
 ![First Token Latency](images/llama2-7b-first-token-lat.png)
